@@ -1,0 +1,3 @@
+@REM docker run -p 8080:8080 -e DB_URL=jdbc:postgresql://host.docker.internal:5432/metro_db metro-route-fetcher -e DB_PASSWORD=12345678 -e DB_USERNAME=
+docker run --rm -p 8080:8080 -e DB_URL=jdbc:postgresql://host.docker.internal:5432/metro_db -e DB_USERNAME=postgres -e DB_PASSWORD=12345678 metro-route-fetcher
+@REM docker run --rm -p 8080:8080 -e DB_URL=jdbc:postgresql://host.docker.internal:5432/metro_db -e DB_PASSWORD=12345678 metro-route-fetcher

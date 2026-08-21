@@ -1,0 +1,31 @@
+services:
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: metro_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  metro-app:
+    build: .
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/metro_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: 12345678
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - metro-app
+
+volumes:
+  postgres_data:

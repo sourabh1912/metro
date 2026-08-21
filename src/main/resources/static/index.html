@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bangalore Metro Route Finder</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #333;
+            color: white;
+        }
+
+        button:hover {
+            background: #555;
+        }
+
+        #result {
+            margin-top: 30px;
+        }
+
+        .station {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f1f1f1;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🚇 Bangalore Metro Route Finder</h1>
+
+    <div class="form-group">
+
+        <label for="from">From</label>
+
+        <select id="from">
+            <option value="">Select starting station</option>
+
+            <option>Indiranagar</option>
+            <option>Swami Vivekananda Road</option>
+            <option>Halasuru</option>
+            <option>Trinity</option>
+            <option>MG Road</option>
+            <option>Cubbon Park</option>
+            <option>Vidhana Soudha</option>
+            <option>Sir M. Visveshwaraya</option>
+            <option>Majestic</option>
+
+        </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label for="to">To</label>
+
+        <select id="to">
+
+            <option value="">Select destination station</option>
+
+            <option>Indiranagar</option>
+            <option>Swami Vivekananda Road</option>
+            <option>Halasuru</option>
+            <option>Trinity</option>
+            <option>MG Road</option>
+            <option>Cubbon Park</option>
+            <option>Vidhana Soudha</option>
+            <option>Sir M. Visveshwaraya</option>
+            <option>Majestic</option>
+
+        </select>
+
+    </div>
+
+
+    <button onclick="findRoute()">
+        Find Route
+    </button>
+
+
+    <div id="result"></div>
+
+</div>
+
+
+<script>
+
+    async function findRoute() {
+
+        const from = document.getElementById("from").value;
+        const to = document.getElementById("to").value;
+
+        const resultDiv = document.getElementById("result");
+
+        resultDiv.innerHTML = "";
+
+        if (!from || !to) {
+
+            resultDiv.innerHTML =
+                "<p class='error'>Please select both stations.</p>";
+
+            return;
+        }
+
+        if (from === to) {
+
+            resultDiv.innerHTML =
+                "<p class='error'>Starting and destination stations cannot be the same.</p>";
+
+            return;
+        }
+
+
+        try {
+
+            const response = await fetch(
+                `/route?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`
+            );
+
+            if (!response.ok) {
+
+                throw new Error("Route could not be found");
+
+            }
+
+            const route = await response.json();
+
+
+            let html = "<h2>Route</h2>";
+
+
+            route.forEach((station, index) => {
+
+                html += `
+                    <div class="station">
+                        ${station}
+                    </div>
+                `;
+
+                if (index < route.length - 1) {
+
+                    html += `
+                        <div class="arrow">
+                            ↓
+                        </div>
+                    `;
+
+                }
+
+            });
+
+
+            resultDiv.innerHTML = html;
+
+        }
+        catch (error) {
+
+            resultDiv.innerHTML =
+                `<p class="error">${error.message}</p>`;
+
+        }
+
+    }
+
+</script>
+
+</body>
+
+</html>
